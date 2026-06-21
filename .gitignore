@@ -12,7 +12,10 @@ dist
 dist-ssr
 *.local
 
-# Editor directories and files
+# 设计参考文件（体积大，仅本地用）
+风格参考/*.jpg
+风格参考/*.png
+风格参考/*.ttf
 .vscode/*
 !.vscode/extensions.json
 .idea
