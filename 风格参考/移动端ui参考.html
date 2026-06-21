@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>个人中心</title>
+    <style>
+        :root {
+            --bg-gray: #f4f5f7;
+            --text-main: #333333;
+            --text-gray: #999999;
+            --border-color: #f0f0f0;
+            --theme-green: #1aad19;
+            --color-orange: #ff5722;
+            --color-blue: #1890ff;
+            --color-green: #52c41a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 移动端容器模拟 */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            background-color: #ffffff;
+            padding-bottom: 60px; /* 为底部导航留白 */
+        }
+
+        /* --- 顶部导航栏 --- */
+        .top-bar {
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .mp-pill {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 30px;
+            border-radius: 15px;
+            border: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 10px;
+        }
+        
+        .mp-pill .dots {
+            font-size: 18px;
+            line-height: 1;
+            letter-spacing: 1px;
+        }
+        .mp-pill .divider {
+            width: 1px;
+            height: 16px;
+            background-color: #e5e5e5;
+        }
+        .mp-pill .circle {
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--text-main);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .mp-pill .circle::after {
+            content: "";
+            width: 4px;
+            height: 4px;
+            background-color: var(--text-main);
+            border-radius: 50%;
+        }
+
+        /* --- 个人信息区 --- */
+        .profile-section {
+            display: flex;
+            align-items: center;
+            padding: 20px 25px;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            background-color: #e0e0e0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            overflow: hidden;
+        }
+        .avatar svg {
+            width: 40px;
+            height: 40px;
+            fill: #ffffff;
+            margin-top: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .username-row {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .refresh-icon {
+            margin-left: 8px;
+            width: 14px;
+            height: 14px;
+            fill: var(--color-green);
+        }
+
+        .reg-time {
+            font-size: 12px;
+            color: var(--text-gray);
+        }
+
+        /* --- 数据统计区 --- */
+        .stats-section {
+            display: flex;
+            padding: 20px 0;
+            margin-bottom: 5px;
+        }
+
+        .stat-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .stat-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background-color: var(--border-color);
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .val-orange { color: var(--color-orange); }
+        .val-blue { color: var(--color-blue); }
+        .val-green { color: var(--color-green); }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .stat-label svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--text-gray);
+        }
+
+        /* --- 菜单区 (灰色背景) --- */
+        .menu-container {
+            background-color: var(--bg-gray);
+            flex-grow: 1;
+            padding: 15px;
+        }
+
+        .menu-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            padding: 0 15px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            font-size: 14px;
+            color: #555555;
+            position: relative;
+        }
+
+        .menu-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: var(--border-color);
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .item-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .arrow-right {
+            width: 12px;
+            height: 12px;
+            border-top: 1.5px solid #cccccc;
+            border-right: 1.5px solid #cccccc;
+            transform: rotate(45deg);
+        }
+
+        /* --- 底部导航栏 --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 480px;
+            height: 55px;
+            background-color: #ffffff;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--text-gray);
+        }
+
+        .nav-item.active {
+            color: var(--theme-green);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header class="top-bar">
+        <span>个人中心</span>
+        <div class="mp-pill">
+            <span class="dots">•••</span>
+            <div class="divider"></div>
+            <div class="circle"></div>
+        </div>
+    </header>
+
+    <section class="profile-section">
+        <div class="avatar">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
+        <div class="user-info">
+            <div class="username-row">
+                未登录 
+                <svg class="refresh-icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+            </div>
+            <div class="reg-time">注册时间：-</div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="stat-item">
+            <div class="stat-value val-orange">0本</div>
+            <div class="stat-label">
+                <svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
+                书籍
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value val-blue">0条</div>
+            <div class="stat-label">
+                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                笔记
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value val-green">0天</div>
+            <div class="stat-label">
+                <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                打卡
+            </div>
+        </div>
+    </section>
+
+    <div class="menu-container">
+        
+        <div class="menu-card">
+            <div class="menu-item">
+                <div class="item-left">
+                    <svg class="item-icon" style="fill: #8bc34a;" viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14

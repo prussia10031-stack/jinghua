@@ -1,0 +1,11 @@
+{
+  "name": "镜花 - 收藏心动字句",
+  "short_name": "镜花",
+  "description": "私人情感档案馆，收藏那些让你心动的字句",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff3e8",
+  "theme_color": "#cc5120",
+  "orientation": "portrait-primary",
+  "icons": []
+}

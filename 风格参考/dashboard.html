@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIND365 - Personal Growth</title>
+    <style>
+        :root {
+            --bg-color: #f7f3ed;
+            --card-bg: #fcf9f5;
+            --primary-dark: #7b5842;
+            --text-main: #4a3c31;
+            --text-light: #9a8c82;
+            --shadow-light: #ffffff;
+            --shadow-dark: #e6dfd5;
+            --active-bg: #ece5da;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            padding: 20px;
+            gap: 30px;
+        }
+
+        /* 新拟态阴影通用类 */
+        .neu-shadow {
+            background: var(--card-bg);
+            box-shadow: 6px 6px 15px var(--shadow-dark), 
+                       -6px -6px 15px var(--shadow-light);
+            border-radius: 16px;
+        }
+
+        /* --- 侧边栏样式 --- */
+        .sidebar {
+            width: 260px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            height: 100%;
+        }
+
+        .brand-card {
+            background: var(--primary-dark);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(123, 88, 66, 0.2);
+        }
+
+        .brand-card h2 {
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .brand-card h1 {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        .brand-card p {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-radius: 12px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item i {
+            margin-right: 15px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+            opacity: 0.6;
+        }
+
+        .nav-item.active {
+            background: var(--active-bg);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), 
+                       inset -3px -3px 6px var(--shadow-light);
+            font-weight: 600;
+        }
+
+        .nav-item:hover:not(.active) {
+            background-color: rgba(236, 229, 218, 0.5);
+        }
+
+        .reminder-card {
+            padding: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .reminder-card h3 {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-weight: normal;
+        }
+
+        /* --- 主内容区样式 --- */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding: 10px 20px 20px 10px;
+            overflow-y: auto;
+        }
+
+        /* 顶部标签切换 */
+        .tabs {
+            display: inline-flex;
+            background: var(--active-bg);
+            border-radius: 30px;
+            padding: 5px;
+            align-self: flex-start;
+        }
+
+        .tab {
+            padding: 8px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: var(--primary-dark);
+            color: white;
+            box-shadow: 0 4px 10px rgba(123, 88, 66, 0.3);

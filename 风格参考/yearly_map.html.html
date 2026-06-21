@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>年度地图 - 达到 To reach</title>
+    <style>
+        :root {
+            --bg-outside: #c88c83;
+            --bg-app: #faf8f7;
+            --text-main: #333333;
+            --text-muted: #888888;
+            --text-light: #b0b0b0;
+            --pink-light: #f5e6e3;
+            --pink-active: #e2a8a0;
+            --pink-dark: #c0786d;
+            --border-color: #f0eaea;
+            --tab-border: #6a829e;
+            
+            /* Action flow block colors */
+            --block-green-bg: #eaf0e6;
+            --block-green-dot: #83b06b;
+            --block-pink-bg: #f5e6e8;
+            --block-pink-dot: #c77b85;
+            --block-blue-bg: #e6edf5;
+            --block-blue-dot: #6b93b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-outside);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* 外部标题 */
+        .external-header {
+            width: 100%;
+            max-width: 1200px;
+            text-align: right;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .external-header .en-title {
+            font-size: 24px;
+            font-weight: 300;
+            position: absolute;
+            right: 0;
+            top: -40px;
+        }
+
+        .external-header .zh-title {
+            font-size: 48px;
+            font-weight: 600;
+            text-align: center;
+            letter-spacing: 4px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* 主应用窗口 */
+        .app-window {
+            width: 100%;
+            max-width: 1200px;
+            height: 760px;
+            background-color: var(--bg-app);
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- 左侧边栏 --- */
+        .sidebar {
+            width: 200px;
+            background-color: var(--bg-app);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+        }
+
+        .logo-area {
+            margin-bottom: 40px;
+        }
+
+        .logo-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            letter-spacing: 2px;
+        }
+
+        .logo-subtitle {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            font-size: 14px;
+            color: var(--text-muted);
+            border-radius: 20px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .nav-item.active {
+            background-color: var(--pink-light);
+            color: var(--pink-dark);
+            font-weight: 500;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .quote {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 24px;
+            height: 24px;
+            background-color: var(--pink-dark);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: var(--text-main);
+        }
+        
+        .user-desc {
+            font-size: 10px;
+            color: var(--text-light);
+        }
+
+        /* --- 中间主内容区 --- */
+        .main-content {
+            flex: 1;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .date-display .small-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .date-display .main-date {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--text-main);
+            letter-spacing: 1px;
+        }
+
+        .date-nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .date-nav span {
+            cursor: pointer;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .tab-item {
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .tab-item.active {
+            background-color: var(--pink-light);
+            color: var(--pink-dark);
+            border: 1px solid var(--tab-border);
+            font-weight: 500;
+        }
+
+        /* 日历网格 */
+        .months-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            flex-grow: 1;
+        }
+
+        .month-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border: 1px solid transparent;
+        }
+
+        .month-card.active-month {
+            border-color: var(--pink-active);
+        }
+
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .month-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .month-count {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 10px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: var(--text-muted);
+            border-radius: 4px;
+        }
+
+        .day-cell.empty {
+            background: transparent;
+        }
+
+        /* 热力图颜色 */
+        .day-cell.level-1 { background-color: #f8e8e6; }
+        .day-cell.level-2 { background-color: #eebfbc; color: white; }
+        .day-cell.level-3 { background-color: #d78b80; color: white; }
+        .day-cell.level-4 { background-color: #b9655a; color: white; }
+
+        /* --- 右侧行动流 --- */
+        .right-sidebar {
+            width: 280px;
+            background-color: var(--bg-app);
+            border-left: 1px solid var(--border-color);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .flow-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .flow-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .flow-sync {
+            font-size: 10px;
+            color: var(--text-light);
+            background: #eef1ec;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .day-section {
+            margin-bottom: 20px;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .btn-add {
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .action-block {
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .action-block::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 16px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .action-time-cat {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            padding-left: 15px;
+        }
+
+        .action-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .action-desc {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        /* 不同的块颜色 */
+        .block-green { background-color: var(--block-green-bg); }
+        .block-green::before { background-color: var(--block-green-dot); }
+        
+        .block-pink { background-color: var(--block-pink-bg); }
+        .block-pink::before { background-color: var(--block-pink-dot); }
+        
+        .block-blue { background-color: var(--block-blue-bg); }
+        .block-blue::before { background-color: var(--block-blue-dot); }
+
+        .more-actions {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="external-header">
+        <div class="en-title">达到 To reach</div>
+        <div class="zh-title">年度地图</div>
+    </div>
+
+    <div class="app-window">
+        <div class="sidebar">
+            <div class="logo-area">
+                <div class="logo-title">达·到</div>
+                <div class="logo-subtitle">人生方向操作系统</div>
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item"><i>◈</i> 地图</li>
+                <li class="nav-item active"><i>◐</i> 日常</li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="quote">
+                    专注重要的事，<br>时间会给你答案。
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">Y</div>
+                    <div>
+                        <div class="user-name">Yangmao</div>
+                        <div class="user-desc">Phase 1.0 mockup</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header-top">
+                <div class="date-display">
+                    <div class="small-title">日常</div>
+                    <div class="main-date">2026 年 5 月 11 日 · 周一</div>
+                </div>
+                <div class="date-nav">
+                    <span>&lt;</span>
+                    <span>今天</span>
+                    <span>&gt;</span>
+                </div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab-item">当日日程</div>
+                <div class="tab-item">周视图</div>
+                <div class="tab-item">月视图</div>
+                <div class="tab-item active">年视图</div>
+            </div>
+
+            <div class="months-grid" id="monthsGrid">
+                </div>
+        </div>
+
+        <div class="right-sidebar">
+            <div class="flow-header">
+                <div class="flow-title">本周行动流</div>
+                <div class="flow-sync">● iOS · 已同步</div>
+            </div>
+
+            <div class="day-section">
+                <div class="day-header">
+                    <span>5 月 11 日 周一 · 今天</span>
+                    <span class="btn-add">+ 添加</span>
+                </div>
+                
+                <div class="action-block block-green">
+                    <div class="action-time-cat">09:00 - 12:00 工作</div>
+                    <div class="action-title">融资准备 — 深度</div>
+                    <div class="action-desc">财务模型 v3 推送</div>
+                </div>
+
+                <div class="action-block block-green">
+                    <div class="action-time-cat">13:00 - 14:00 工作</div>
+                    <div class="action-title">小红书矩阵巡检</div>
+                </div>
+
+                <div class="action-block block-green">
+                    <div class="action-time-cat">16:00 - 17:30 工作</div>
+                    <div class="action-title">LX xhs-3 灵感稿</div>
+                </div>
+
+                <div class="action-block block-blue">
+                    <div class="action-time-cat">17:30 - 18:30 健康</div>
+                    <div class="action-title">健身房 · 上肢</div>
+                </div>
+
+                <div class="action-block block-pink">
+                    <div class="action-time-cat">19:00 - 20:00 生活</div>
+                    <div class="action-title">陪猫 + 准备晚饭</div>
+                </div>
+
+                <div class="action-block block-green">
+                    <div class="action-time-cat">21:00 - 21:30 工作</div>
+                    <div class="action-title">达到 APP 测试</div>
+                </div>
+
+                <div class="action-block block-blue">
+                    <div class="action-time-cat">21:30 - 23:00 学习</div>
+                    <div class="action-title">LXGW 字体研究</div>
+                </div>
+            </div>
+
+            <div class="day-section">
+                <div class="day-header">
+                    <span>5 月 12 日 周二</span>
+                    <span class="btn-add">+</span>
+                </div>
+                
+                <div class="action-block block-green">
+                    <div class="action-time-cat">09:00 - 12:00 工作</div>
+                    <div class="action-title">融资准备 — 深度</div>
+                </div>
+
+                <div class="action-block block-blue">
+                    <div class="action-time-cat">19:00 - 20:00 健康</div>
+                    <div class="action-title">夜跑 5 公里</div>
+                </div>
+            </div>
+
+            <div class="day-header" style="margin-top: 10px;">
+                <span>5 月 13 日 周三 ••••</span>
+                <span>4 件</span>
+            </div>
+            
+            <div class="more-actions">查看全部行动 ></div>
+        </div>
+    </div>
+
+    <script>
+        // 模拟 2026 年各月数据 (起步星期、天数)
+        const yearData = [
+            { month: '一月', count: 26, days: 31, startDay: 4 }, 
+            { month: '二月', count: 37, days: 28, startDay: 0 }, 
+            { month: '三月', count: 10, days: 31, startDay: 0 }, 
+            { month: '四月', count: 21, days: 30, startDay: 3 }, 
+            { month: '五月', count: 32, days: 31, startDay: 5, isActive: true }, 
+            { month: '六月', count: 43, days: 30, startDay: 1 }, 
+            { month: '七月', count: 16, days: 31, startDay: 3 }, 
+            { month: '八月', count: 27, days: 31, startDay: 6 }, 
+            { month: '九月', count: 38, days: 30, startDay: 2 }, 
+            { month: '十月', count: 11, days: 31, startDay: 4 }, 
+            { month: '十一月', count: 22, days: 30, startDay: 0 }, 
+            { month: '十二月', count: 33, days: 31, startDay: 2 }  
+        ];
+
+        const gridContainer = document.getElementById('monthsGrid');
+
+        yearData.forEach(data => {
+            let daysHtml = '';
+            
+            // 填充月初空白
+            for (let i = 0; i < data.startDay; i++) {
+                daysHtml += `<div class="day-cell empty"></div>`;
+            }
+
+            // 填充日期并随机生成热力图层级（模拟设计图效果）
+            for (let i = 1; i <= data.days; i++) {
+                // 简单的随机逻辑来分配颜色，突出5月的设计效果
+                let level = 0;
+                if (Math.random() > 0.6) level = 1;
+                if (Math.random() > 0.8) level = 2;
+                if (Math.random() > 0.9) level = 3;
+                if (Math.random() > 0.95) level = 4;
+                
+                // 让五月的样式比较接近原图
+                if (data.isActive && [2, 6, 10].includes(i)) level = 4;
+                if (data.isActive && [3, 7, 8].includes(i)) level = 2;
+
+                let levelClass = level > 0 ? `level-${level}` : '';
+                daysHtml += `<div class="day-cell ${levelClass}">${i}</div>`;
+            }
+
+            const activeClass = data.isActive ? 'active-month' : '';
+            
+            const monthCard = `
+                <div class="month-card ${activeClass}">
+                    <div class="month-header">
+                        <span class="month-name">${data.month}</span>
+                        <span class="month-count">${data.count} 件</span>
+                    </div>
+                    <div class="weekdays">
+                        <span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span>
+                    </div>
+                    <div class="days-grid">
+                        ${daysHtml}
+                    </div>
+                </div>
+            `;
+            gridContainer.insertAdjacentHTML('beforeend', monthCard);
+        });
+    </script>
+</body>
+</html>

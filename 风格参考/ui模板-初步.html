@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Growth Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #e8ded3;
+            --card-bg: #f4eee7;
+            --text-main: #333333;
+            --text-muted: #8c857d;
+            --primary-dark: #6e4e3b;
+            --primary-light: #dfd4c5;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --shadow: 4px 6px 20px rgba(0, 0, 0, 0.04), -2px -2px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            padding: 24px;
+            gap: 24px;
+        }
+
+        /* ========== 左侧边栏 ========== */
+        .sidebar {
+            width: 240px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .brand-card {
+            background: linear-gradient(145deg, #7b5944, #5a3e2e);
+            color: #fff;
+            padding: 24px 20px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+
+        .brand-logo {
+            font-size: 12px;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            width: 16px;
+            text-align: center;
+            color: var(--text-muted);
+        }
+        .nav-item.active i {
+            color: var(--primary-dark);
+        }
+
+        .reminder-card {
+            margin-top: auto;
+            background-color: var(--card-bg);
+            padding: 16px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow);
+        }
+
+        .reminder-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .reminder-text {
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* 顶部大卡片 */
+        .header-panel {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .date-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+
+        .greeting {
+            font-size: 26px;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .greeting-sub {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .action-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            font-size: 13px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-dark);
+            color: #fff;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid #d3c8bc;
+            color: var(--text-main);
+        }
+
+        .stat-summary {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            gap: 16px;
+        }
+
+        .trend-icon {
+            position: absolute;
+            top: 32px;
+            right: 32px;
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-light);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+        }
+
+        /* 数据卡片网格 */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            flex: 1;
+        }
+
+        .data-card {
+            background-color: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .card-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .card-icon {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+
+        .card-value span {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        /* 底部可视化元素 */
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 6px;
+            margin-top: auto;
+        }
+
+        .heat-cell {
+            aspect-ratio: 1;
+            background-color: #dfd5c8;
+            border-radius: 4px;
+        }
+        .heat-cell.active-1 { background-color: #cbbba8; }
+        .heat-cell.active-2 { background-color: #a88e7a; }
+
+        .progress-section {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: auto;
+        }
+
+        .circle-chart {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary-dark) 0%, #dfd5c8 0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .circle-inner {
+            width: 42px;
+            height: 42px;
+            background-color: var(--card-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .progress-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 左侧边栏 -->
+    <aside class="sidebar">
+        <div class="brand-card">
+            <div class="brand-logo"><i class="fa-solid fa-book-open"></i> MIND365</div>
+            <div class="brand-title">Personal Growth</div>
+            <div class="brand-subtitle">慢一点，写下来，继续成长。</div>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active"><i class="fa-solid fa-border-all"></i>成长概览</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-pen-nib"></i>心境随笔</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-sparkles"></i>时光轨迹</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-quote-left"></i>灵感书库</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-book"></i>深度思考</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-rotate"></i>复盘报告</a>
+            <a href="#" class="nav-item"><i class="fa-solid fa-sliders"></i>设置</a>
+        </nav>
+
+        <div class="reminder-card">
+            <div class="reminder-title">今日提醒</div>
+            <div class="reminder-text">你今天认真写下的一小段话，正在替未来的自己留下清晰的线索。</div>
+        </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 顶部控制面板 -->
+        <section class="header-panel">
+            <div class="trend-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            <div class="date-info">DAILY SYSTEM · 4月6日星期一</div>
+            <h1 class="greeting">下午好，于无声处积蓄破土的力量。</h1>
+            <p class="greeting-sub">愿你在喧嚣之外，拥有一片自由呼吸的自留地。</p>
+            
+            <div class="action-row">
+                <div class="btn-group">
+                    <button class="btn btn-primary">写一条新记录</button>
+                    <button class="btn btn-outline">进入周 / 月复盘</button>
+                    <button class="btn btn-outline">浏览所有日记</button>
+                </div>
+                <div class="stat-summary">
+                    <span>本周 0 条记录</span>
+                    <span>本月 3 条沉淀</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 四个数据卡片 -->
+        <section class="cards-grid">
+            
+            <!-- 卡片1: 连续记录 -->
+            <div class="data-card">
+                <div class="card-header">
+                    <span class="card-label">STREAK</span>
+                    <i class="fa-solid fa-fire card-icon"></i>
+                </div>
+                <div class="card-title">连续记录</div>
+                <div class="card-value">3 <span>天</span></div>
+                <div class="card-desc">日子被点亮的瞬间，都藏在这些深浅不一的色块里。</div>
+                <div class="heatmap">
+                    <!-- 模拟热力图方块 -->
+                    <div class="heat-cell active-1"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                    <div class="heat-cell"></div><div class="heat-cell active-2"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                    <div class="heat-cell"></div><div class="heat-cell"></div><div class="heat-cell active-1"></div><div class="heat-cell active-2"></div><div class="heat-cell"></div><div class="heat-cell"></div>
+                </div>
+            </div>
+
+            <!-- 卡片2: 本周情绪 -->
+            <div class="data-card">
+                <div class="card-header">
+                    <span class="card-label">MOOD</span>
+                    <i class="fa-solid fa-wand-magic-sparkles card-icon"></i>
+                </div>
+                <div class="card-title">本周情绪</div>
+                <div class="card-value">-- <span>/10</span></div>
+                <div class="card-desc">感知心里的天气。无论晴雨，每一个瞬间的感受都值得被珍藏。<br><br>本周还没有情绪轨迹，写下今天的记录后，这里会开始亮起来。</div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: auto;">写下今天的情绪切片</div>
+            </div>
+
+            <!-- 卡片3: 学习时长 -->
+            <div class="data-card">
+                <div class="card-header">
+                    <span class="card-label">FOCUS</span>
+                    <i class="fa-solid fa-stopwatch card-icon"></i>
+                </div>
+                <div class="card-title">学习时长</div>
+                <div class="card-value">0.0 <span>h</span></div>
+                <div class="card-desc">推开外界的嘈杂，在方寸之间，找回掌控生活的主动权。</div>
+                <div class="progress-section">
+                    <div class="circle-chart">
+                        <div class="circle-inner">0%</div>
+                    </div>
+                    <div class="progress-text">专注进度<br>本周目标 10h</div>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 16px;">给今天记一点学习时间</div>
+            </div>
+
+            <!-- 卡片4: 阅读时长 -->
+            <div class="data-card">
+                <div class="card-header">
+                    <span class="card-label">READING</span>
+                    <i class="fa-solid fa-book-open-reader card-icon"></i>
+                </div>
+                <div class="card-title">阅读时长</div>
+                <div class="card-value">0.0 <span>h</span></div>
+                <div class="card-desc">哪怕只是片刻的沉浸，也能在灵魂深处唤醒新的共鸣。</div>
+                <div class="progress-section">
+                    <div class="circle-chart">
+                        <div class="circle-inner">0%</div>
+                    </div>
+                    <div class="progress-text">阅读进度<br>本周目标 7h</div>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-top: 16px;">记录一次阅读片刻</div>
+            </div>
+
+        </section>
+    </main>
+
+</body>
+</html>
